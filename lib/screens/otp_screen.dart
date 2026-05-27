@@ -14,6 +14,25 @@ class _OtpScreenState extends State<OtpScreen> {
   final TextEditingController _otpController = TextEditingController();
   final AuthService _auth = AuthService();
   bool _isLoading = false;
+  int _secondsLeft = 60;
+  bool _canResend = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _startTimer();
+  }
+
+  void _startTimer() {
+    setState(() { _secondsLeft = 60; _canResend = false; });
+    Future.doWhile(() async {
+      await Future.delayed(const Duration(seconds: 1));
+      if (!mounted) return false;
+      setState(() => _secondsLeft--);
+      if (_secondsLeft <= 0) { setState(() => _canResend = true); return false; }
+      return true;
+    });
+  }
 
   void _verifyOtp() async {
     final otp = _otpController.text.trim();
@@ -27,17 +46,13 @@ class _OtpScreenState extends State<OtpScreen> {
     setState(() => _isLoading = true);
 
     try {
-      // Step 1: verify OTP → get token
       final result = await _auth.verifyOtp(widget.studentCode, otp);
       final token = result['token'];
-
-      // Step 2: fetch student profile with token
       final profileData = await _auth.getProfile(token);
 
       setState(() => _isLoading = false);
       if (!mounted) return;
 
-      // Step 3: navigate with real data
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -70,6 +85,12 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   @override
+  void dispose() {
+    _otpController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF0F2F8),
@@ -85,8 +106,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     Icon(Icons.school, size: 28),
                     SizedBox(width: 8),
                     Text('Traruner Swapno',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold)),
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   ],
                 ),
                 const SizedBox(height: 40),
@@ -108,18 +128,15 @@ class _OtpScreenState extends State<OtpScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text('Verify OTP',
-                          style: TextStyle(
-                              fontSize: 22, fontWeight: FontWeight.bold)),
+                          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 6),
                       Text(
                         'OTP sent to the mobile number registered for Student Code: ${widget.studentCode}',
-                        style:
-                            const TextStyle(fontSize: 13, color: Colors.grey),
+                        style: const TextStyle(fontSize: 13, color: Colors.grey),
                       ),
                       const SizedBox(height: 24),
                       const Text('Enter OTP',
-                          style: TextStyle(
-                              fontSize: 13, fontWeight: FontWeight.w500)),
+                          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
                       const SizedBox(height: 8),
                       TextField(
                         controller: _otpController,
@@ -128,15 +145,12 @@ class _OtpScreenState extends State<OtpScreen> {
                         decoration: InputDecoration(
                           hintText: 'Enter the OTP',
                           hintStyle: const TextStyle(color: Colors.grey),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                             borderSide: const BorderSide(color: Colors.black),
                           ),
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 14),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -148,32 +162,38 @@ class _OtpScreenState extends State<OtpScreen> {
                             backgroundColor: Colors.black,
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                           ),
                           child: _isLoading
-                              ? const SizedBox(
-                                  height: 18,
-                                  width: 18,
-                                  child: CircularProgressIndicator(
-                                      color: Colors.white, strokeWidth: 2),
-                                )
-                              : const Text('Verify OTP',
-                                  style: TextStyle(fontSize: 15)),
+                              ? const SizedBox(height: 18, width: 18,
+                                  child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                              : const Text('Verify OTP', style: TextStyle(fontSize: 15)),
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 12),
+                      Center(
+                        child: _canResend
+                            ? TextButton(
+                                onPressed: () {
+                                  // TODO: call resend API
+                                  _startTimer();
+                                },
+                                child: const Text('Resend OTP',
+                                    style: TextStyle(color: Colors.black)),
+                              )
+                            : Text('Resend OTP in $_secondsLeft s',
+                                style: const TextStyle(color: Colors.grey, fontSize: 13)),
+                      ),
+                      const SizedBox(height: 8),
                       Center(
                         child: TextButton(
                           onPressed: () => Navigator.pop(context),
                           child: const Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.arrow_back,
-                                  size: 16, color: Colors.grey),
+                              Icon(Icons.arrow_back, size: 16, color: Colors.grey),
                               SizedBox(width: 4),
-                              Text('Back',
-                                  style: TextStyle(color: Colors.grey)),
+                              Text('Back', style: TextStyle(color: Colors.grey)),
                             ],
                           ),
                         ),

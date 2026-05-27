@@ -18,9 +18,28 @@ class ConfirmationScreen extends StatefulWidget {
 class _ConfirmationScreenState extends State<ConfirmationScreen> {
   final TextEditingController _otpController = TextEditingController();
   final AuthService _auth = AuthService();
-  bool _isLoading = false;
-  bool _submitted = false;
-  String _applicationNumber = '';
+bool _isLoading = false;
+bool _submitted = false;
+String _applicationNumber = '';
+int _secondsLeft = 60;
+bool _canResend = false;
+
+@override
+void initState() {
+  super.initState();
+  _startTimer();
+}
+
+void _startTimer() {
+  setState(() { _secondsLeft = 60; _canResend = false; });
+  Future.doWhile(() async {
+    await Future.delayed(const Duration(seconds: 1));
+    if (!mounted) return false;
+    setState(() => _secondsLeft--);
+    if (_secondsLeft <= 0) { setState(() => _canResend = true); return false; }
+    return true;
+  });
+}
 
   void _submit() async {
     final otp = _otpController.text.trim();
@@ -144,7 +163,17 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                 : const Text('Submit Declaration', style: TextStyle(fontSize: 15)),
           ),
         ),
-        const SizedBox(height: 16),
+const SizedBox(height: 12),
+        Center(
+          child: _canResend
+              ? TextButton(
+                  onPressed: () { _startTimer(); },
+                  child: const Text('Resend OTP', style: TextStyle(color: Colors.black)),
+                )
+              : Text('Resend OTP in $_secondsLeft s',
+                  style: const TextStyle(color: Colors.grey, fontSize: 13)),
+        ),
+        const SizedBox(height: 8),
         const Divider(),
         const SizedBox(height: 4),
         SizedBox(

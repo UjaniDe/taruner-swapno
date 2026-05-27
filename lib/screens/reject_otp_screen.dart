@@ -19,6 +19,25 @@ class RejectOtpScreen extends StatefulWidget {
 class _RejectOtpScreenState extends State<RejectOtpScreen> {
   final TextEditingController _otpController = TextEditingController();
   bool _isLoading = false;
+int _secondsLeft = 60;
+bool _canResend = false;
+
+@override
+void initState() {
+  super.initState();
+  _startTimer();
+}
+
+void _startTimer() {
+  setState(() { _secondsLeft = 60; _canResend = false; });
+  Future.doWhile(() async {
+    await Future.delayed(const Duration(seconds: 1));
+    if (!mounted) return false;
+    setState(() => _secondsLeft--);
+    if (_secondsLeft <= 0) { setState(() => _canResend = true); return false; }
+    return true;
+  });
+}
 
   void _verifyOtp() async {
     final otp = _otpController.text.trim();
@@ -149,7 +168,17 @@ class _RejectOtpScreenState extends State<RejectOtpScreen> {
                                   style: TextStyle(fontSize: 15)),
                         ),
                       ),
-                      const SizedBox(height: 16),
+const SizedBox(height: 12),
+                      Center(
+                        child: _canResend
+                            ? TextButton(
+                                onPressed: () { _startTimer(); },
+                                child: const Text('Resend OTP', style: TextStyle(color: Colors.black)),
+                              )
+                            : Text('Resend OTP in $_secondsLeft s',
+                                style: const TextStyle(color: Colors.grey, fontSize: 13)),
+                      ),
+                      const SizedBox(height: 8),
                       Center(
                         child: TextButton(
                           onPressed: () => Navigator.pop(context),

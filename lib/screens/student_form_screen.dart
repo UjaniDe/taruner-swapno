@@ -152,7 +152,7 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
                     const SizedBox(height: 12),
                     _InfoRow(label: 'Bank Name', value: widget.profile.bankName),
                     _InfoRow(label: 'Branch Name', value: widget.profile.branchName),
-                    _InfoRow(label: 'IFSC Code', value: widget.profile.ifsc),
+                    _InfoRowWithToggle(label: 'IFSC Code', value: widget.profile.ifsc),
                     _InfoRow(label: 'Account Number', value: widget.profile.accountNumber),
                     const SizedBox(height: 24),
                     const Divider(),
@@ -293,6 +293,50 @@ class _InfoRow extends StatelessWidget {
           const Text(' : ', style: TextStyle(color: Colors.grey)),
           Expanded(
             child: Text(value, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+class _InfoRowWithToggle extends StatefulWidget {
+  final String label;
+  final String value;
+  const _InfoRowWithToggle({required this.label, required this.value});
+
+  @override
+  State<_InfoRowWithToggle> createState() => _InfoRowWithToggleState();
+}
+
+class _InfoRowWithToggleState extends State<_InfoRowWithToggle> {
+  bool _visible = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 130,
+            child: Text(widget.label,
+                style: const TextStyle(fontSize: 13, color: Colors.grey)),
+          ),
+          const Text(' : ', style: TextStyle(color: Colors.grey)),
+          Expanded(
+            child: Text(
+              _visible ? widget.value : '••••••••',
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+            ),
+          ),
+          GestureDetector(
+            onTap: () => setState(() => _visible = !_visible),
+            child: Icon(
+              _visible ? Icons.visibility_off : Icons.visibility,
+              size: 18,
+              color: Colors.grey,
+            ),
           ),
         ],
       ),
