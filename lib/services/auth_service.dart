@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-const String baseUrl = 'http://10.0.2.2:3000';
+const String baseUrl = 'https://taruner-swapno-backend.onrender.com';
 
 class AuthService {
   Future<void> sendOtp(String studentCode) async {
@@ -61,4 +61,37 @@ class AuthService {
     if (res.statusCode != 201) throw Exception(data['message']);
     return data['applicationNumber'];
   }
+
+  // Find student account
+Future<void> findStudentAccount(String studentCode, String mobile, String aadhar) async {
+  final res = await http.post(
+    Uri.parse('$baseUrl/student/find-account'),
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({'studentCode': studentCode, 'mobile': mobile, 'aadhar': aadhar}),
+  );
+  final data = jsonDecode(res.body);
+  if (res.statusCode != 200) throw Exception(data['message']);
+}
+
+// Verify and send OTP for reject flow
+Future<void> verifyAndSendOtp(String studentCode, String aadhar, String mobile) async {
+  final res = await http.post(
+    Uri.parse('$baseUrl/student/verify-and-send-otp'),
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({'studentCode': studentCode, 'aadhar': aadhar, 'mobile': mobile}),
+  );
+  final data = jsonDecode(res.body);
+  if (res.statusCode != 200) throw Exception(data['message']);
+}
+
+// Submit rejection
+Future<void> submitRejection(String studentCode, String remarks) async {
+  final res = await http.post(
+    Uri.parse('$baseUrl/student/reject'),
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({'studentCode': studentCode, 'remarks': remarks}),
+  );
+  final data = jsonDecode(res.body);
+  if (res.statusCode != 201) throw Exception(data['message']);
+}
 }

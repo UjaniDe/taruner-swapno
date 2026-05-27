@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'otp_screen.dart';
 import 'package:taruner_swapno/services/auth_service.dart';
-import 'package:taruner_swapno/services/auth_service.dart';
+import 'package:taruner_swapno/screens/find_student_account_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -173,7 +173,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           const SizedBox(height: 16),
                           Center(
                             child: TextButton(
-                              onPressed: () {},
+                              onPressed: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (_) => const FindStudentAccountScreen()),
+                              ),
                               child: const Text(
                                 'Having trouble logging in?',
                                 style: TextStyle(color: Colors.grey),
