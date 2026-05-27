@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:taruner_swapno/services/auth_service.dart';
-import 'reject_details_screen.dart';
+import 'reject_otp_screen.dart';
 
 class VerifyAndRejectScreen extends StatefulWidget {
   final String studentCode;
@@ -43,7 +43,7 @@ class _VerifyAndRejectScreenState extends State<VerifyAndRejectScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => RejectDetailsScreen(
+          builder: (_) => RejectOtpScreen(
             studentCode: widget.studentCode,
             mobile: mobile,
           ),

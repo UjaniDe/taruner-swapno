@@ -37,36 +37,69 @@ class _RejectDetailsScreenState extends State<RejectDetailsScreen> {
       if (!mounted) return;
 
       showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (_) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          title: const Row(
-            children: [
-              Icon(Icons.info_outline, color: Colors.black),
-              SizedBox(width: 8),
-              Text('Action Required', style: TextStyle(fontSize: 18)),
-            ],
+  context: context,
+  barrierDismissible: false,
+  builder: (_) => AlertDialog(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    contentPadding: const EdgeInsets.all(24),
+    content: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 56,
+          height: 56,
+          decoration: const BoxDecoration(
+            color: Color(0xFFE6F4EA),
+            shape: BoxShape.circle,
           ),
-          content: const Text(
-            'Contact the head of institute to update Aadhaar and mobile number in Bangla Shiksha Portal.',
-            style: TextStyle(fontSize: 14, height: 1.5),
-          ),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).popUntil((route) => route.isFirst);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          child: const Icon(Icons.check_rounded,
+              color: Color(0xFF2F855A), size: 32),
+        ),
+        const SizedBox(height: 16),
+        const Text('Rejection Submitted',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 8),
+        const Text(
+          'Your rejection has been recorded successfully.',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 13, color: Colors.grey),
+        ),
+        const SizedBox(height: 20),
+        const Divider(),
+        const SizedBox(height: 16),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: const [
+            Icon(Icons.info_outline, size: 18, color: Colors.black54),
+            SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                'Contact the head of institute to update Aadhaar and mobile number in Bangla Shiksha Portal.',
+                style: TextStyle(fontSize: 13, height: 1.5),
               ),
-              child: const Text('Back to Login'),
             ),
           ],
         ),
-      );
+        const SizedBox(height: 24),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).popUntil((route) => route.isFirst);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.black,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
+            ),
+            child: const Text('Back to Login'),
+          ),
+        ),
+      ],
+    ),
+  ),
+);
     } catch (e) {
       setState(() => _isSubmitting = false);
       if (!mounted) return;
