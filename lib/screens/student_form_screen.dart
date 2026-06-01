@@ -6,12 +6,17 @@ import 'confirmation_screen.dart';
 class StudentProfile {
   final String studentCode;
   final String name;
+  final String fatherName;
+  final String motherName;
+  final String guardianName;
+  final String guardianMobile;
+  final String gender;
   final String dob;
+  final String maskedAadhar;
   final String schoolName;
   final String className;
   final String section;
   final String roll;
-  final String maskedAadhar;
   final String bankName;
   final String branchName;
   final String ifsc;
@@ -20,12 +25,17 @@ class StudentProfile {
   const StudentProfile({
     required this.studentCode,
     required this.name,
+    required this.fatherName,
+    required this.motherName,
+    required this.guardianName,
+    required this.guardianMobile,
+    required this.gender,
     required this.dob,
+    required this.maskedAadhar,
     required this.schoolName,
     required this.className,
     required this.section,
     required this.roll,
-    required this.maskedAadhar,
     required this.bankName,
     required this.branchName,
     required this.ifsc,
@@ -132,13 +142,24 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
                     const Text('Please verify your details below before proceeding',
                         style: TextStyle(fontSize: 13, color: Colors.grey)),
                     const SizedBox(height: 24),
+
+                    // Personal Details
                     const Text('PERSONAL DETAILS',
                         style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.black54, letterSpacing: 0.5)),
                     const SizedBox(height: 12),
-                    _InfoRow(label: 'Full Name', value: widget.profile.name),
+                    _InfoRow(label: 'Student Name', value: widget.profile.name),
+                    _InfoRow(label: 'Student Code', value: widget.profile.studentCode),
+                    _InfoRow(label: 'Father Name', value: widget.profile.fatherName),
+                    _InfoRow(label: 'Mother Name', value: widget.profile.motherName),
+                    _InfoRow(label: 'Guardian Name', value: widget.profile.guardianName),
+                    _InfoRow(label: 'Guardian Mobile', value: widget.profile.guardianMobile),
+                    _InfoRow(label: 'Gender', value: widget.profile.gender),
                     _InfoRow(label: 'Date of Birth', value: widget.profile.dob),
                     _InfoRow(label: 'Aadhaar No.', value: widget.profile.maskedAadhar),
+
                     const SizedBox(height: 20),
+
+                    // Academic Details
                     const Text('ACADEMIC DETAILS',
                         style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.black54, letterSpacing: 0.5)),
                     const SizedBox(height: 12),
@@ -146,17 +167,23 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
                     _InfoRow(label: 'Class', value: widget.profile.className),
                     _InfoRow(label: 'Section', value: widget.profile.section),
                     _InfoRow(label: 'Roll Number', value: widget.profile.roll),
+
                     const SizedBox(height: 20),
+
+                    // Bank Details
                     const Text('BANK DETAILS',
                         style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.black54, letterSpacing: 0.5)),
                     const SizedBox(height: 12),
                     _InfoRow(label: 'Bank Name', value: widget.profile.bankName),
                     _InfoRow(label: 'Branch Name', value: widget.profile.branchName),
-                    _InfoRowWithToggle(label: 'IFSC Code', value: widget.profile.ifsc),
-                    _InfoRow(label: 'Account Number', value: widget.profile.accountNumber),
+                    _InfoRow(label: 'IFSC Code', value: widget.profile.ifsc),
+                    _InfoRowWithToggle(label: 'Account Number', value: widget.profile.accountNumber),
+
                     const SizedBox(height: 24),
                     const Divider(),
                     const SizedBox(height: 16),
+
+                    // Checkbox
                     InkWell(
                       onTap: () {
                         setState(() => _bankDetailsCorrect = !_bankDetailsCorrect);
@@ -187,6 +214,7 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
                         ],
                       ),
                     ),
+
                     AnimatedSize(
                       duration: const Duration(milliseconds: 250),
                       curve: Curves.easeInOut,
@@ -246,6 +274,7 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
                             )
                           : const SizedBox.shrink(),
                     ),
+
                     const SizedBox(height: 16),
                     const Divider(),
                     const SizedBox(height: 4),
@@ -299,6 +328,7 @@ class _InfoRow extends StatelessWidget {
     );
   }
 }
+
 class _InfoRowWithToggle extends StatefulWidget {
   final String label;
   final String value;
@@ -326,7 +356,7 @@ class _InfoRowWithToggleState extends State<_InfoRowWithToggle> {
           const Text(' : ', style: TextStyle(color: Colors.grey)),
           Expanded(
             child: Text(
-              _visible ? widget.value : '••••••••',
+              _visible ? widget.value : '••••••••••••',
               style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
             ),
           ),
