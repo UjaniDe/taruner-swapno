@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:taruner_swapno/services/auth_service.dart';
 import 'confirmation_screen.dart';
+import 'package:taruner_swapno/services/verhoeff.dart';
 
 class StudentProfile {
   final String studentCode;
@@ -66,35 +67,41 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
   bool _isRejecting = false;
 
   void _verifyAadhar() async {
-    final aadhar = _aadharController.text.replaceAll(' ', '');
-    if (aadhar.length != 12) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a valid 12-digit Aadhaar number')),
-      );
-      return;
-    }
-    setState(() => _isVerifying = true);
-    try {
-      await _auth.verifyAadhar(widget.token, aadhar);
-      setState(() => _isVerifying = false);
-      if (!mounted) return;
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => ConfirmationScreen(
-            token: widget.token,
-            studentCode: widget.profile.studentCode,
-          ),
-        ),
-      );
-    } catch (e) {
-      setState(() => _isVerifying = false);
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString().replaceAll('Exception: ', ''))),
-      );
-    }
+  final aadhar = _aadharController.text.replaceAll(' ', '');
+  if (aadhar.length != 12) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Please enter a valid 12-digit Aadhaar number')),
+    );
+    return;
   }
+  if (!Verhoeff.validate(aadhar)) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Invalid Aadhaar number. Please check and try again.')),
+    );
+    return;
+  }
+  setState(() => _isVerifying = true);
+  try {
+    await _auth.verifyAadhar(widget.token, aadhar);
+    setState(() => _isVerifying = false);
+    if (!mounted) return;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ConfirmationScreen(
+          token: widget.token,
+          studentCode: widget.profile.studentCode,
+        ),
+      ),
+    );
+  } catch (e) {
+    setState(() => _isVerifying = false);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(e.toString().replaceAll('Exception: ', ''))),
+    );
+  }
+}
 
   void _showRejectDialog() {
     final outerContext = context;
