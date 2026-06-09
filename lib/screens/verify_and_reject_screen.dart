@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:taruner_swapno/services/auth_service.dart';
+import 'package:taruner_swapno/services/verhoeff.dart';
 import 'reject_otp_screen.dart';
 
 class VerifyAndRejectScreen extends StatefulWidget {
@@ -27,6 +28,13 @@ class _VerifyAndRejectScreenState extends State<VerifyAndRejectScreen> {
       return;
     }
 
+    if (!Verhoeff.validate(aadhar)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Invalid Aadhaar number. Please check and try again.')),
+      );
+      return;
+    }
+
     if (mobile.length != 10) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please enter a valid 10-digit mobile number')),
@@ -34,9 +42,18 @@ class _VerifyAndRejectScreenState extends State<VerifyAndRejectScreen> {
       return;
     }
 
+    if (!RegExp(r'^[6-9]').hasMatch(mobile)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Mobile number must start with 6, 7, 8, or 9')),
+      );
+      return;
+    }
+
     setState(() => _isLoading = true);
 
     try {
+      // TODO: replace with real NIC API - send OTP to mobile linked with Aadhaar
+      // For now hardcoded OTP 123456 stored against studentCode
       await AuthService().verifyAndSendOtp(widget.studentCode, aadhar, mobile);
       setState(() => _isLoading = false);
       if (!mounted) return;
@@ -106,7 +123,7 @@ class _VerifyAndRejectScreenState extends State<VerifyAndRejectScreen> {
                           style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 6),
                       const Text(
-                        'Please enter your correct mobile number and Aadhaar number.',
+                        'Please enter your Aadhaar number and the mobile number you want the OTP sent to.',
                         style: TextStyle(fontSize: 13, color: Colors.grey),
                       ),
                       const SizedBox(height: 24),
@@ -134,10 +151,10 @@ class _VerifyAndRejectScreenState extends State<VerifyAndRejectScreen> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      const Text("Guardian's Mobile Number",
+                      const Text("Mobile Number",
                           style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
                       const SizedBox(height: 4),
-                      const Text('(Please enter your correct phone number)',
+                      const Text('OTP will be sent to this number',
                           style: TextStyle(fontSize: 11, color: Colors.grey)),
                       const SizedBox(height: 8),
                       TextField(
@@ -146,7 +163,7 @@ class _VerifyAndRejectScreenState extends State<VerifyAndRejectScreen> {
                         maxLength: 10,
                         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                         decoration: InputDecoration(
-                          hintText: 'Enter your Guardian Mobile Number',
+                          hintText: 'Enter your Mobile Number',
                           hintStyle: const TextStyle(color: Colors.grey),
                           counterText: '',
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
@@ -169,8 +186,7 @@ class _VerifyAndRejectScreenState extends State<VerifyAndRejectScreen> {
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                           ),
                           child: _isLoading
-                              ? const SizedBox(
-                                  height: 18, width: 18,
+                              ? const SizedBox(height: 18, width: 18,
                                   child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
                               : const Text('Send OTP', style: TextStyle(fontSize: 15)),
                         ),

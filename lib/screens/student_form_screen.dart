@@ -417,7 +417,7 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: OutlinedButton(
-                        onPressed: _showRejectDialog,
+                        onPressed: _bankDetailsCorrect ? null : _showRejectDialog,
                         style: OutlinedButton.styleFrom(
                           foregroundColor: Colors.red,
                           side: const BorderSide(color: Colors.red),
