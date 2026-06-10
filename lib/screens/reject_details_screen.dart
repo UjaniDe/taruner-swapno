@@ -221,7 +221,7 @@ class _RejectDetailsScreenState extends State<RejectDetailsScreen> {
                                   maxLines: 4,
                                   maxLength: 500,
                                   decoration: InputDecoration(
-                                    hintText: 'e.g. My Aadhaar number is wrong, correct number is...',
+                                    hintText: 'e.g. I am not receiving OTP on guardian mobile number...',
                                     hintStyle: const TextStyle(color: Colors.grey, fontSize: 13),
                                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                                     focusedBorder: OutlineInputBorder(

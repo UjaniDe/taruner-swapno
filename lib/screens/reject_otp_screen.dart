@@ -123,7 +123,7 @@ void _startTimer() {
                           style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 6),
                       Text(
-                        'OTP sent to ${widget.mobile} registered for Student Code: ${widget.studentCode}',
+                        'OTP has been sent to the mobile number linked with your Aadhaar.',
                         style: const TextStyle(fontSize: 13, color: Colors.grey),
                       ),
                       const SizedBox(height: 24),

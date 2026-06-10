@@ -125,7 +125,7 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
                 maxLines: 4,
                 maxLength: 500,
                 decoration: InputDecoration(
-                  hintText: 'e.g. My Aadhaar number is wrong...',
+                  hintText: 'e.g. My Bank Account details are incorrect...',
                   hintStyle: const TextStyle(color: Colors.grey, fontSize: 13),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                   focusedBorder: OutlineInputBorder(
