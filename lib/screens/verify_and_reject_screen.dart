@@ -151,10 +151,10 @@ class _VerifyAndRejectScreenState extends State<VerifyAndRejectScreen> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      const Text("Mobile Number",
+                      const Text("Guardian's Mobile Number",
                           style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
                       const SizedBox(height: 4),
-                      const Text('OTP will be sent to this number',
+                      const Text('Please enter your correct guardian mobile number',
                           style: TextStyle(fontSize: 11, color: Colors.grey)),
                       const SizedBox(height: 8),
                       TextField(

@@ -52,9 +52,13 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Stack(
           children: [
             // Background pattern (light doodle feel like the website)
-            Positioned.fill(
-              child: CustomPaint(painter: _DoodlePainter()),
-            ),
+Positioned.fill(
+  child: Image.asset(
+    'assets/images/background.png',
+    fit: BoxFit.cover,
+    opacity: const AlwaysStoppedAnimation(0.15),
+  ),
+),
             Center(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(24),
