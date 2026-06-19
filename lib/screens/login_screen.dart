@@ -26,16 +26,33 @@ void _sendOtp() async {
   setState(() => _isLoading = true);
 
   try {
-    final alreadySubmitted = await AuthService().sendOtp(code);
+    final status = await AuthService().sendOtp(code);
     setState(() => _isLoading = false);
     if (!mounted) return;
 
-    if (alreadySubmitted) {
+    if (status == 'alreadySubmitted') {
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
           title: const Text('Already Submitted'),
           content: const Text('You have already submitted your declaration.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
+    if (status == 'rejected') {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text('Declaration Rejected'),
+          content: const Text('Your declaration has been rejected. Please contact your school.'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),

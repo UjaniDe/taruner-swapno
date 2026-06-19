@@ -4,16 +4,17 @@ import 'package:http/http.dart' as http;
 const String baseUrl = 'https://taruner-swapno-backend.onrender.com';
 
 class AuthService {
-Future<bool> sendOtp(String studentCode) async {
+Future<String> sendOtp(String studentCode) async {
   final res = await http.post(
     Uri.parse('$baseUrl/auth/send-otp'),
     headers: {'Content-Type': 'application/json'},
     body: jsonEncode({'studentCode': studentCode}),
   );
   final data = jsonDecode(res.body);
-  if (res.statusCode == 403 && data['alreadySubmitted'] == true) return true;
+  if (res.statusCode == 403 && data['alreadySubmitted'] == true) return 'alreadySubmitted';
+  if (res.statusCode == 403 && data['rejected'] == true) return 'rejected';
   if (res.statusCode != 200) throw Exception(data['message']);
-  return false;
+  return 'ok';
 }
 
   Future<Map<String, dynamic>> verifyOtp(String studentCode, String otp) async {
