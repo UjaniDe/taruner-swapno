@@ -14,36 +14,53 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _studentCodeController = TextEditingController();
   bool _isLoading = false;
 
-  void _sendOtp() async {
-    final code = _studentCodeController.text.trim();
-    if (code.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter your Student Code')),
+void _sendOtp() async {
+  final code = _studentCodeController.text.trim();
+  if (code.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Please enter your Student Code')),
+    );
+    return;
+  }
+
+  setState(() => _isLoading = true);
+
+  try {
+    final alreadySubmitted = await AuthService().sendOtp(code);
+    setState(() => _isLoading = false);
+    if (!mounted) return;
+
+    if (alreadySubmitted) {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text('Already Submitted'),
+          content: const Text('You have already submitted your declaration.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
       );
       return;
     }
 
-    setState(() => _isLoading = true);
-
-    try {
-      await AuthService().sendOtp(code);
-      setState(() => _isLoading = false);
-      if (!mounted) return;
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => OtpScreen(studentCode: code),
-        ),
-      );
-    } catch (e) {
-      setState(() => _isLoading = false);
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString().replaceAll('Exception: ', ''))),
-      );
-    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => OtpScreen(studentCode: code),
+      ),
+    );
+  } catch (e) {
+    setState(() => _isLoading = false);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(e.toString().replaceAll('Exception: ', ''))),
+    );
   }
-
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
