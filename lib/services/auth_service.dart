@@ -18,7 +18,7 @@ Future<String> sendOtp(String studentCode) async {
 }
 
   Future<Map<String, dynamic>> verifyOtp(String studentCode, String otp) async {
-    final res = await http.post(
+    final res = await http.post( 
       Uri.parse('$baseUrl/auth/verify-otp'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'studentCode': studentCode, 'otp': otp}),
